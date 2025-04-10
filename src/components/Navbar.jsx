@@ -51,7 +51,7 @@ const Navbar = () => {
                                     <DropdownMenuContent>
                                         <DropdownMenuLabel>{user?.username || "User"}</DropdownMenuLabel>
                                         <DropdownMenuSeparator />
-                                        <DropdownMenuItem onClick={() => navigate("/order")}>
+                                        <DropdownMenuItem onClick={() => navigate("/orders")}>
                                             Your Orders
                                         </DropdownMenuItem>
                                         <DropdownMenuItem onClick={() => logout()}>

@@ -18,7 +18,7 @@ export const CartProvider = ({ children }) => {
                 withCredentials: true,
                 headers: {
                     Authorization: `Bearer ${token}` // ✅ attach token explicitly
-                  }
+                }
             });
             console.log("Fetched cart:", data); // Check if data.cart contains correct totalItem value
             setCart(data.cart)
@@ -41,6 +41,34 @@ export const CartProvider = ({ children }) => {
         }
 
     }
+
+    async function updateCart(action, id) {
+        try {
+            const { data } = await axios.put(`http://localhost:4000/api/cart/update?action=${action}`, { id },
+                {
+                    withCredentials: true
+                }
+            );
+            fetchCart();
+        } catch (error) {
+            toast.error(error.response.data.message)
+        }
+    }
+
+    async function removeFromCart(id) {
+        try {
+            const { data } = await axios.delete(`http://localhost:4000/api/cart/remove/${id}`,
+                {
+                    withCredentials: true
+                }
+            );
+            toast.success(data.message)
+            fetchCart();
+        } catch (error) {
+            toast.error(error.response.data.message)
+        }
+    }
+
     useEffect(() => {
         fetchCart();
 
@@ -56,7 +84,7 @@ export const CartProvider = ({ children }) => {
         setSubTotal(0);
     }
 
-    return <CartContext.Provider value={{ cart, totalItem, subTotal, fetchCart, addToCart, clearCart }}>{children}</CartContext.Provider>
+    return <CartContext.Provider value={{ cart, totalItem, subTotal, fetchCart, addToCart, clearCart, updateCart, removeFromCart }}>{children}</CartContext.Provider>
 }
 
 export const CartData = () => useContext(CartContext)

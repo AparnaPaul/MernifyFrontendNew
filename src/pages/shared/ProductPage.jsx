@@ -13,8 +13,7 @@ const ProductPage = () => {
     const { addToCart } = CartData()
     const { id } = useParams()
     const { isAuth } = useAuth()
-    // console.log(product)
-    // console.log(relatedProduct)
+  
     useEffect(() => {
         fetchProduct(id)
     }, [id]);
@@ -38,8 +37,8 @@ const ProductPage = () => {
                                                 <CarouselItem key={index}>
                                                     <img
                                                         src={image.url}
-                                                        alt="image"
-                                                        className="w-full rounded-md"
+                                                        alt="product image"
+                                                        className="w-full h-[400px] object-contain rounded-md"
                                                     />
                                                 </CarouselItem>
                                             ))}
@@ -73,9 +72,9 @@ const ProductPage = () => {
             )
 
             }
-            {relatedProduct?.length > 0 && <div className='mt-12'>
-                <h2 className="text-xl font-bold">Related Products</h2>
-                <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {relatedProduct?.length > 0 && <div className='mt-12 container mx-auto px-4'>
+                <h2 className="text-xl font-bold mb-4">Related Products</h2>
+                <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {relatedProduct.map(e => (
                         <ProductCard key={e._id} product={e} />
                     ))}
