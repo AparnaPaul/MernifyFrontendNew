@@ -2,7 +2,7 @@ import Loading from '@/components/Loading'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import Orders from '../user/Orders'
+import Orders from './Orders'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 

@@ -16,7 +16,9 @@ import { CartProvider } from "./context/CartContext";
 import Payment from "./pages/user/Payment";
 import OrderProcessing from "./pages/user/OrderProcessing";
 import Orders from "./pages/user/Orders";
-import OrderPage from "./pages/shared/OrderPage";
+import OrderPage from "./pages/user/OrderPage";
+import AdminOrderDetails from "./pages/admin/AdminOrderDetails";
+import AllOrders from "./pages/admin/AllOrders";
 
 const AppRoutes = () => {
   const { isAuth, loading, user } = useAuth();
@@ -25,13 +27,13 @@ const AppRoutes = () => {
 
   return (
     <>
-    
+
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<Products />} />
         <Route path="/product/:id" element={<ProductPage />} />
-        
+
         {/* Protected Routes - Require Authentication */}
         <Route path="/cart" element={isAuth ? <Cart /> : <Login />} />
         <Route path="/orders" element={isAuth ? <Orders /> : <Login />} />
@@ -42,12 +44,17 @@ const AppRoutes = () => {
         <Route path="/orderSuccess" element={isAuth ? <OrderProcessing /> : <Login />} />
 
         {/* Admin Protected Route */}
-        <Route path="/adminDashboard" element={isAuth && user?.role === "admin" ? <AdminDashboard /> : <Login />} />
-
-        {/* Authentication Routes */}
-        <Route path="/login" element={isAuth ? <Home /> : <Login />} />
-        <Route path="/signup" element={isAuth ? <Home /> : <Signup />} />
         
+        <Route path="/adminDashboard" element={isAuth && user?.role === "admin" ? <AdminDashboard /> : <Login />} />
+        <Route path="/admin/order/:id" element={isAuth && user?.role === "admin" ? <AdminOrderDetails /> : <Login />} />
+        <Route path="/admin/orders" element={isAuth && user?.role === "admin" ? <AllOrders /> : <Login />} />
+
+
+        
+        {/* Authentication Routes */}
+        <Route path="/login" element={isAuth && user?.role === "user" ? <Home /> : <Login />} />
+        <Route path="/signup" element={isAuth ? <Home /> : <Signup />} />
+
         {/* Catch-All Route */}
         <Route path="*" element={<NotFound />} />
       </Routes>
@@ -59,11 +66,11 @@ const AppRoutes = () => {
 const App = () => {
   return (
     <BrowserRouter>
-        <CartProvider> {/* ✅ CartProvider must be inside AuthProvider */}
-      <AuthProvider> {/* ✅ AuthProvider must be inside BrowserRouter */}
+      <CartProvider> {/* ✅ CartProvider must be inside AuthProvider */}
+        <AuthProvider> {/* ✅ AuthProvider must be inside BrowserRouter */}
           <AppRoutes />
-      </AuthProvider>
-        </CartProvider>
+        </AuthProvider>
+      </CartProvider>
     </BrowserRouter>
   );
 };
