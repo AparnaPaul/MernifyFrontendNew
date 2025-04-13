@@ -16,9 +16,7 @@ export const CartProvider = ({ children }) => {
         try {
             const { data } = await axios.get(`http://localhost:4000/api/cart/all`, {
                 withCredentials: true,
-                headers: {
-                    Authorization: `Bearer ${token}` // ✅ attach token explicitly
-                }
+               
             });
             console.log("Fetched cart:", data); // Check if data.cart contains correct totalItem value
             setCart(data.cart)

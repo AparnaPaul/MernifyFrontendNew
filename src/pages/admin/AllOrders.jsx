@@ -36,7 +36,7 @@ const AllOrders = () => {
   const updateOrderStatus = async (orderId, status) => {
     setLoading(true);
     try {
-      const { data } = await axios.post(
+      const { data } = await axios.put(
         `http://localhost:4000/api/order/${orderId}`,
         { status },
         {
@@ -111,7 +111,7 @@ const AllOrders = () => {
                   <TableCell>
                     <select
                       value={order.status}
-                      className="w-[150px] px-3 py-2 border rounded-md"
+                      className="w-[150px] px-3 py-2 border rounded-md bg-white dark:bg-gray-800 text-black dark:text-white"
                       onChange={(e) =>
                         updateOrderStatus(order._id, e.target.value)
                       }

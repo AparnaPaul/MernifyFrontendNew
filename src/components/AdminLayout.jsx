@@ -68,7 +68,7 @@ const AdminLayout = ({ children }) => {
           >
             <MenuIcon className="w-5 h-5" />
           </Button>
-          <h2 className="text-lg font-bold hidden lg:block">Admin Dashboard</h2>
+          <h2 className="text-lg font-bold lg:block">Admin Dashboard</h2>
         </div>
         <div className="p-4">{children}</div>
       </div>
