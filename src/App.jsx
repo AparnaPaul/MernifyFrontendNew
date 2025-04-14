@@ -46,19 +46,19 @@ const AppRoutes = () => {
         <Route path="/payment/:id" element={isAuth ? <Payment /> : <Login />} />
         <Route path="/orderSuccess" element={isAuth ? <OrderProcessing /> : <Login />} />
         <Route path="/editProfile" element={isAuth ? <EditProfile /> : <Login />} />
-        
+
 
         {/* Admin Protected Route */}
-        
+
         <Route path="/adminDashboard" element={isAuth && user?.role === "admin" ? <AdminDashboard /> : <Login />} />
         <Route path="/admin/order/:id" element={isAuth && user?.role === "admin" ? <AdminOrderDetails /> : <Login />} />
         <Route path="/admin/orders" element={isAuth && user?.role === "admin" ? <AllOrders /> : <Login />} />
         <Route path="/admin/info" element={isAuth && user?.role === "admin" ? <InfoPage /> : <Login />} />
-       
+
         <Route path="/admin/addAdmin" element={isAuth && user?.role === "admin" ? <AddNewAdmin /> : <Login />} />
 
 
-        
+
         {/* Authentication Routes */}
         <Route path="/login" element={isAuth && user?.role === "user" ? <Home /> : <Login />} />
         <Route path="/signup" element={isAuth ? <Home /> : <Signup />} />

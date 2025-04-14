@@ -1,4 +1,3 @@
-// src/components/layout/AdminLayout.jsx
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Home, Info, MenuIcon, ShoppingBag, X } from 'lucide-react';

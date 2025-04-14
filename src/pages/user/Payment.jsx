@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify';
 import { loadStripe } from '@stripe/stripe-js'
+import { server } from '@/main'
 
 const Payment = () => {
     const { cart, subTotal, fetchCart } = CartData()
@@ -19,7 +20,7 @@ const Payment = () => {
     const { id } = useParams()
     async function fetchAddress() {
         try {
-            const { data } = await axios.get(`http://localhost:4000/api/address/${id}`, {
+            const { data } = await axios.get(`${server}/api/address/${id}`, {
                 withCredentials: true
             }
 
@@ -37,7 +38,7 @@ const Payment = () => {
         if (method === "cod") {
             setLoading(true)
             try {
-                const { data } = await axios.post(`http://localhost:4000/api/order/new/cod`, {
+                const { data } = await axios.post(`${server}/api/order/new/cod`, {
                     method,
                     address: address.address,
                     phone: address.phone,
@@ -61,7 +62,7 @@ const Payment = () => {
             try {
                 setLoading(true);
                 const stripe = await stripePromise
-                const { data } = await axios.post(`http://localhost:4000/api/order/new/online`, {
+                const { data } = await axios.post(`${server}/api/order/new/online`, {
                     method,
                     address: address.address,
                     phone: address.phone,

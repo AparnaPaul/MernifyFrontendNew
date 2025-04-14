@@ -1,6 +1,7 @@
 import Loading from '@/components/Loading'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { server } from '@/main'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -14,7 +15,7 @@ const Orders = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const { data } = await axios.get(`http://localhost:4000/api/order/all`, {
+                const { data } = await axios.get(`${server}/api/order/all`, {
                     withCredentials: true,
                 })
 

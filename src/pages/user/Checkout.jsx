@@ -7,6 +7,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { server } from '@/main';
 
 const Checkout = () => {
     const [address, setAddress] = useState([])
@@ -15,7 +16,7 @@ const Checkout = () => {
 
     async function fetchAddress() {
         try {
-            const { data } = await axios.get(`http://localhost:4000/api/address/all`, {
+            const { data } = await axios.get(`${server}/api/address/all`, {
                 withCredentials: true
             })
 
@@ -26,7 +27,7 @@ const Checkout = () => {
             setLoading(false)
         }
     }
- 
+
     const [modalOpen, setModalOpen] = useState(false)
     const [newAddress, setNewAddress] = useState({
         address: "",
@@ -35,7 +36,7 @@ const Checkout = () => {
 
     const handleAddAddress = async () => {
         try {
-            const { data } = await axios.post(`http://localhost:4000/api/address/new`, {
+            const { data } = await axios.post(`${server}/api/address/new`, {
                 address: newAddress.address, phone: newAddress.phone
             }, {
                 withCredentials: true
@@ -58,24 +59,24 @@ const Checkout = () => {
         fetchAddress()
     }, [])
 
-    const deleteHandler = async(id) => {
+    const deleteHandler = async (id) => {
         console.log("Deleting address with ID:", id); // Add this log
-   if(confirm("Are you sure you want to delete this address?")) {
-    try{
-        const {data} = await axios.delete(`http://localhost:4000/api/address/${id}`, {
-            withCredentials: true
-        })
-        toast.success(data.message)
-        fetchAddress()
-    }catch (error) {
-        console.log("Error deleting address:", error);
-        if (error.response) {
-            toast.error(error.response.data.message || "Error deleting address");
-        } else {
-            toast.error("An unexpected error occurred");
+        if (confirm("Are you sure you want to delete this address?")) {
+            try {
+                const { data } = await axios.delete(`${server}/api/address/${id}`, {
+                    withCredentials: true
+                })
+                toast.success(data.message)
+                fetchAddress()
+            } catch (error) {
+                console.log("Error deleting address:", error);
+                if (error.response) {
+                    toast.error(error.response.data.message || "Error deleting address");
+                } else {
+                    toast.error("An unexpected error occurred");
+                }
+            }
         }
-    }
-   }
     };
     return (
         <div className='container mx-auto px-4 py-8 min-h-[60vh]'>
@@ -85,7 +86,7 @@ const Checkout = () => {
                     {address && address.length > 0 ? address.map((e) => (
                         <div className='p-4 border rounded-lg shadow-sm ' key={e._id}>
                             <h3 className='text-lg font-semibold flex justify-between gap-3'>Address - {e.address}
-                                <Button variant="destructive" onClick={()=>deleteHandler(e._id)}><Trash /></Button>
+                                <Button variant="destructive" onClick={() => deleteHandler(e._id)}><Trash /></Button>
                             </h3>
                             <p>Phone - {e.phone}</p>
                             <Link to={`/payment/${e._id}`}>
@@ -101,16 +102,16 @@ const Checkout = () => {
                         <DialogTitle>Add New Address</DialogTitle>
                     </DialogHeader>
                     <div className='space-y-4'>
-                        
-                    <Input  placeholder="Address" value={newAddress.address} onChange={e => setNewAddress({ ...newAddress, address: e.target.value })} />
-                    <Input  placeholder="Phone" value={newAddress.phone} onChange={e => setNewAddress({ ...newAddress, phone: e.target.value })} />
+
+                        <Input placeholder="Address" value={newAddress.address} onChange={e => setNewAddress({ ...newAddress, address: e.target.value })} />
+                        <Input placeholder="Phone" value={newAddress.phone} onChange={e => setNewAddress({ ...newAddress, phone: e.target.value })} />
                     </div>
                     <DialogFooter>
-                    <Button variant="outline" onClick={()=> setModalOpen(false)}>Close</Button>
-                    <Button variant="outline" onClick={handleAddAddress}>Add Address</Button>
-                </DialogFooter>
+                        <Button variant="outline" onClick={() => setModalOpen(false)}>Close</Button>
+                        <Button variant="outline" onClick={handleAddAddress}>Add Address</Button>
+                    </DialogFooter>
                 </DialogContent>
-              
+
             </Dialog>
         </div>
     )

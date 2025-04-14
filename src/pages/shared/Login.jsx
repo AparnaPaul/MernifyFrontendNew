@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { server } from "@/main";
 
 const Login = () => {
   const { register, handleSubmit } = useForm();
@@ -19,11 +20,11 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     if (!data.email || !data.password) return toast.error("Email and Password are required");
-  
+
     const apiUrl = role === "admin"
-      ? "http://localhost:4000/api/admin/login"
-      : "http://localhost:4000/api/user/login";
-  
+      ? `${server}/api/admin/login`
+      : `${server}/api/user/login`;
+
     try {
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -31,19 +32,19 @@ const Login = () => {
         body: JSON.stringify(data),
         credentials: "include"
       });
-  
+
       const result = await response.json();
-  
+
       if (!response.ok) {
         return toast.error(result.message || "Login failed");
       }
-  
-      const userData =  result.user || result.admin;
+
+      const userData = result.user || result.admin;
       const token = document.cookie
         .split(";")
         .find((row) => row.trim().startsWith("token="))
         ?.split("=")[1];
-        
+
       console.log("Debugging--")
       console.log(userData.username, token, userData.role, userData.email)
 
@@ -59,7 +60,7 @@ const Login = () => {
       console.error(error);
     }
   };
-  
+
   return (
     <div className="min-h-[70vh] flex items-center justify-center">
       <Card className="md:w-[400px] sm:w-[300px]">

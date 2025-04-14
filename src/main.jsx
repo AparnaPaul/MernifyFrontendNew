@@ -7,18 +7,18 @@ import { ProductProvider } from './context/ProductContext'
 
 export const server = "http://localhost:4000";
 export const categories = [
-  "smartphone", "shoes", "Home Appliances" , "Smart Watch", "earbuds", "laptop", "tablet", "tshirt", "camera", "television", "refrigerator"]
- 
+  "smartphone", "shoes", "Home Appliances", "Smart Watch", "earbuds", "laptop", "tablet", "tshirt", "camera", "television", "refrigerator"]
+
 
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider>
-    
-          <ProductProvider>
-            <App />
-          </ProductProvider>
- 
+
+      <ProductProvider>
+        <App />
+      </ProductProvider>
+
     </ThemeProvider>
 
   </StrictMode>,

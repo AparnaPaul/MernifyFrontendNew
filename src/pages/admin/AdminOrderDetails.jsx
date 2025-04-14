@@ -4,6 +4,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Loading from '@/components/Loading';
+import { server } from '@/main';
 
 const AdminOrderDetails = () => {
   const { id } = useParams();
@@ -13,7 +14,7 @@ const AdminOrderDetails = () => {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/api/admin/order/${id}`, {
+        const response = await axios.get(`${server}/api/admin/order/${id}`, {
           withCredentials: true,
         });
         setOrder(response.data);
@@ -40,10 +41,10 @@ const AdminOrderDetails = () => {
 
   return (
     <div className='container mx-auto py-6'>
-        {/* <Button variant="outline" className="mb-4" onClick={() => window.history.back()}> */}
-        <Button variant="outline" className="mb-4"  asChild><Link to="/admin/orders">
-  ← Back</Link>
-</Button>
+      {/* <Button variant="outline" className="mb-4" onClick={() => window.history.back()}> */}
+      <Button variant="outline" className="mb-4" asChild><Link to="/admin/orders">
+        ← Back</Link>
+      </Button>
 
       <Card className="mb-6">
         <CardHeader>

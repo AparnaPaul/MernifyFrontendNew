@@ -193,23 +193,23 @@ const InfoPage = () => {
                             />
                             <YAxis />
                             <Tooltip
-  cursor={{ fill: "#f0f0f0" }}
-  content={({ payload }) => {
-    if (payload && payload.length) {
-      const { title, sold } = payload[0].payload;
-      return (
-        <div
-          className="bg-white text-black dark:bg-zinc-800 dark:text-white p-2 border border-gray-200 dark:border-zinc-600 text-xs rounded shadow"
-        >
-          <strong>{title}</strong>
-          <br />
-          <span>Sold: {sold}</span>
-        </div>
-      );
-    }
-    return null;
-  }}
-/>
+                                cursor={{ fill: "#f0f0f0" }}
+                                content={({ payload }) => {
+                                    if (payload && payload.length) {
+                                        const { title, sold } = payload[0].payload;
+                                        return (
+                                            <div
+                                                className="bg-white text-black dark:bg-zinc-800 dark:text-white p-2 border border-gray-200 dark:border-zinc-600 text-xs rounded shadow"
+                                            >
+                                                <strong>{title}</strong>
+                                                <br />
+                                                <span>Sold: {sold}</span>
+                                            </div>
+                                        );
+                                    }
+                                    return null;
+                                }}
+                            />
 
                             <Bar dataKey={"sold"} fill="#8884d8" radius={8} />
                         </BarChart>

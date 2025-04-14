@@ -1,5 +1,6 @@
 import { Children, createContext, use, useContext, useEffect, useState } from 'react'
 import axios from "axios";
+import { server } from '@/main';
 
 const ProductContext = createContext();
 
@@ -16,7 +17,7 @@ export const ProductProvider = ({ children }) => {
 
     async function fetchProducts() {
         try {
-            const { data } = await axios.get(`http://localhost:4000/api/product/all?search=${search}&category=${category}&sortByPrice=${price}&page=${page}`);
+            const { data } = await axios.get(`${server}/api/product/all?search=${search}&category=${category}&sortByPrice=${price}&page=${page}`);
             setProducts(data.products);
             setNewProd(data.newProduct);
             setCategories(data.categories)
@@ -33,7 +34,7 @@ export const ProductProvider = ({ children }) => {
     async function fetchProduct(id) {
         setLoading(true)
         try {
-            const { data } = await axios.get(`http://localhost:4000/api/product/${id}`)
+            const { data } = await axios.get(`${server}/api/product/${id}`)
 
             setProduct(data.product)
             setRelatedProduct(data.relatedProduct)

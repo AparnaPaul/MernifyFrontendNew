@@ -1,88 +1,71 @@
+import { server } from "@/main";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { createContext, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-const CartContext = createContext()
+const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
+  const [loading, setLoading] = useState(false);
+  const [totalItem, setTotalItem] = useState(0);
+  const [subTotal, setSubTotal] = useState(0);
+  const [cart, setCart] = useState([]);
+
+  async function fetchCart() {
+    const token = Cookies.get("token"); // Retrieve token from cookies
+
+    if (!token) {
+      toast.error("You need to log in to view your cart.");
+      return;
+    }
+
+    try {
+      const { data } = await axios.get(`${server}/api/cart/all`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include token in the request header
+        },
+      });
+
+      setCart(data.cart);
+      setTotalItem(data.totalQuantity);
+      setSubTotal(data.subTotal);
+    } catch (error) {
+      console.error("Error fetching cart data:", error);
+      toast.error("Failed to load cart.");
+    }
+  }
+
+  async function addToCart(product) {
     const token = Cookies.get("token");
-    const [loading, setLoading] = useState(false)
-    const [totalItem, setTotalItem] = useState(0)
-    const [subTotal, setSubTotal] = useState(0)
 
-    const [cart, setCart] = useState([])
-    async function fetchCart() {
-        try {
-            const { data } = await axios.get(`http://localhost:4000/api/cart/all`, {
-                withCredentials: true,
-               
-            });
-            console.log("Fetched cart:", data); // Check if data.cart contains correct totalItem value
-            setCart(data.cart)
-            setTotalItem(data.totalQuantity);
-            setSubTotal(data.subTotal)
-        } catch (error) {
-            console.log(error)
+    try {
+      const { data } = await axios.post(
+        `${server}/api/cart/add`,
+        { product },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Include token in the request header
+          },
         }
+      );
+
+      toast.success(data.message);
+      fetchCart();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Error adding to cart");
     }
-    async function addToCart(product) {
-        try {
-            const { data } = await axios.post(`http://localhost:4000/api/cart/add`, { product }, {
-                withCredentials: true
-            })
+  }
 
-            toast.success(data.message);
-            fetchCart();
-        } catch (error) {
-            toast.error(error.response.data.message)
-        }
+  useEffect(() => {
+    fetchCart();
+  }, []);
 
-    }
+  return (
+    <CartContext.Provider value={{ cart, totalItem, subTotal, fetchCart, addToCart }}>
+      {children}
+    </CartContext.Provider>
+  );
+};
 
-    async function updateCart(action, id) {
-        try {
-            const { data } = await axios.put(`http://localhost:4000/api/cart/update?action=${action}`, { id },
-                {
-                    withCredentials: true
-                }
-            );
-            fetchCart();
-        } catch (error) {
-            toast.error(error.response.data.message)
-        }
-    }
-
-    async function removeFromCart(id) {
-        try {
-            const { data } = await axios.delete(`http://localhost:4000/api/cart/remove/${id}`,
-                {
-                    withCredentials: true
-                }
-            );
-            toast.success(data.message)
-            fetchCart();
-        } catch (error) {
-            toast.error(error.response.data.message)
-        }
-    }
-
-    useEffect(() => {
-        fetchCart();
-
-    }, [])
-
-    useEffect(() => {
-        console.log("Updated totalItem in context:", totalItem);
-    }, [totalItem]);
-
-    function clearCart() {
-        setCart([]);
-        setTotalItem(0);
-        setSubTotal(0);
-    }
-
-    return <CartContext.Provider value={{ cart, totalItem, subTotal, fetchCart, addToCart, clearCart, updateCart, removeFromCart }}>{children}</CartContext.Provider>
-}
-
-export const CartData = () => useContext(CartContext)
+export const CartData = () => useContext(CartContext);

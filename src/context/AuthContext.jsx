@@ -4,10 +4,7 @@ import toast, { Toaster } from "react-hot-toast";
 import Cookies from "js-cookie";
 import { CartData } from "./CartContext";
 
-
-// Ensure context is always created at the top level
 const AuthContext = createContext();
-
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -24,20 +21,17 @@ export const AuthProvider = ({ children }) => {
   const login = async (name, token, role, email) => {
     setBtnLoading(true);
     try {
-      // Store user data and token in localStorage and Cookies
       const userData = { username: name, role, email };
 
       localStorage.setItem("loggedInUser", JSON.stringify({ user: userData }));
-      Cookies.set("token", token, { expires: 1 }); // Store token in cookies (1 day)
+      Cookies.set("token", token, { expires: 1 });
 
       setUser(userData);
       setIsAuth(true);
       toast.success("Logged in successfully");
-      
-     
+
       await fetchCart();
 
-      // Redirect based on the user's role
       if (role === "admin") {
         navigate("/adminDashboard");
       } else {
@@ -78,8 +72,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-
-
     localStorage.removeItem("token");
     localStorage.removeItem("loggedInUser");
     Cookies.remove("token");

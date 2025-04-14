@@ -6,6 +6,7 @@ import Orders from './Orders'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuth } from '@/context/AuthContext'
+import { server } from '@/main'
 
 const OrderPage = () => {
   const { id } = useParams()
@@ -18,7 +19,7 @@ const OrderPage = () => {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:4000/api/order/${id}`, {
+        const { data } = await axios.get(`${server}/api/order/${id}`, {
           withCredentials: true
         })
 
@@ -121,8 +122,8 @@ const OrderPage = () => {
               </Card>
             ))}
           </div></> : <p className='text-red-500 text-3xl text-center'>This is not your order <br />
-            <Link to={'/'} className='mt-4 underline text-blue-400 text-2xl'>Go to home page</Link>
-          </p>
+          <Link to={'/'} className='mt-4 underline text-blue-400 text-2xl'>Go to home page</Link>
+        </p>
       }
 
     </div>

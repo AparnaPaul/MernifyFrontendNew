@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { CartData } from '@/context/CartContext'
+import { server } from '@/main'
 import axios from 'axios'
 import { Loader } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
@@ -29,7 +30,7 @@ const OrderProcessing = () => {
 
             setLoading(true)
             try {
-                const { data } = await axios.post(`http://localhost:4000/api/order/verify/payment`, { sessionId }, {
+                const { data } = await axios.post(`${server}/api/order/verify/payment`, { sessionId }, {
                     withCredentials: true,
                 })
 
