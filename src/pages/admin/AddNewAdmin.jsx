@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { server } from '@/main';
-
 import { toast } from 'react-toastify';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import Cookies from 'js-cookie'; // Import Cookies
 
 const AddNewAdmin = () => {
   const [formData, setFormData] = useState({
@@ -23,15 +23,28 @@ const AddNewAdmin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    console.log("Submitting form with data:", formData); // Debugging log
+
+    // Check if the token exists in cookies
+    const token = Cookies.get('token');
+    if (!token) {
+      toast.error("Token not found. Please login.");
+      return;
+    }
+
     try {
       const { data } = await axios.post(
         `${server}/api/admin/addAdmin`,
         formData,
-        { withCredentials: true }
+        {
+          withCredentials: true, // Automatically send cookies with the request
+        }
       );
+      console.log("Admin created successfully:", data); // Debugging log
       toast.success(data.message || 'New admin added');
       setFormData({ username: '', email: '', password: '', mobile: '' });
     } catch (err) {
+      console.error("Error while creating admin:", err); // Debugging log
       toast.error(err.response?.data?.message || err.message);
     } finally {
       setLoading(false);

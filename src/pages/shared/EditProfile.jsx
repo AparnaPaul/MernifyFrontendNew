@@ -7,11 +7,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";  // Importing navigate
 
 const EditProfile = () => {
     const { user, setUser } = useAuth();
     const [username, setUsername] = useState("");
     const [mobile, setMobile] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [currentPassword, setCurrentPassword] = useState("");
+    const navigate = useNavigate(); // Hook for navigation
 
     useEffect(() => {
         if (user) {
@@ -31,7 +35,7 @@ const EditProfile = () => {
 
             const { data } = await axios.put(
                 url,
-                { username, mobile },
+                { username, mobile, password: currentPassword, newPassword },
                 { withCredentials: true }
             );
 
@@ -40,6 +44,13 @@ const EditProfile = () => {
             }
 
             toast.success(data.message || "Profile updated successfully");
+
+            // Redirect to admin dashboard after profile edit
+            if (user.role === "admin") {
+                navigate("/adminDashboard"); // Redirect to admin page
+            } else {
+                navigate("/"); // Redirect to user homepage
+            }
         } catch (err) {
             console.error("Profile update error:", err);
             toast.error(err.response?.data?.message || "Failed to update profile");
@@ -69,6 +80,24 @@ const EditProfile = () => {
                                 type="text"
                                 value={mobile}
                                 onChange={(e) => setMobile(e.target.value)}
+                            />
+                        </div>
+
+                        <div>
+                            <Label>New Password</Label>
+                            <Input
+                                type="password"
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                            />
+                        </div>
+
+                        <div>
+                            <Label>Current Password</Label>
+                            <Input
+                                type="password"
+                                value={currentPassword}
+                                onChange={(e) => setCurrentPassword(e.target.value)}
                             />
                         </div>
 

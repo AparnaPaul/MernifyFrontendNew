@@ -40,7 +40,7 @@ const AppRoutes = () => {
         {/* Protected Routes - Require Authentication */}
         <Route path="/cart" element={isAuth ? <Cart /> : <Login />} />
         <Route path="/orders" element={isAuth ? <Orders /> : <Login />} />
-        <Route path="/order/:id" element={isAuth ? <OrderPage /> : <Login />} />
+        <Route path="/order/:id" element={isAuth  ? <OrderPage /> : <Login />} />
 
         <Route path="/checkout" element={isAuth ? <Checkout /> : <Login />} />
         <Route path="/payment/:id" element={isAuth ? <Payment /> : <Login />} />

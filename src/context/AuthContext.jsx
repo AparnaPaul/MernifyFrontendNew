@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
     fetchUser();
   }, []);
 
+  
   const login = async (name, token, role, email) => {
     setBtnLoading(true);
     try {
