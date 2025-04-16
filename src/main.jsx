@@ -11,8 +11,6 @@ console.log("DEBUG",axiosInstance)
 export const categories = [
   "smartphone", "shoes", "Home Appliances", "Smart Watch", "earbuds", "laptop", "tablet", "tshirt", "camera", "television", "refrigerator"]
 
-
-
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider>

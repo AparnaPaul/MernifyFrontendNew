@@ -19,10 +19,10 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   
-  const login = async (name, token, role, email) => {
+  const login = async (name, token, role, email, mobile) => {
     setBtnLoading(true);
     try {
-      const userData = { username: name, role, email };
+      const userData = { username: name, role, email, mobile };
 
       localStorage.setItem("loggedInUser", JSON.stringify({ user: userData }));
       Cookies.set("token", token, { expires: 1 });
