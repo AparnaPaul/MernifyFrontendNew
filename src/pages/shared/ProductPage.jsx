@@ -9,10 +9,203 @@ import { CartData } from '@/context/CartContext';
 import { ProductData } from '@/context/ProductContext';
 import { categories, server } from '@/main';
 import axios from 'axios';
-import { Edit, Loader, X } from 'lucide-react';
+import { Edit, Edit3, Loader, Trash, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+
+// Review Form component
+const ReviewForm = ({ productId, fetchReviews }) => {
+    const [rating, setRating] = useState(0);
+    const [reviewComment, setReviewComment] = useState('');
+    const [errors, setErrors] = useState({});
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!rating || !reviewComment) {
+            setErrors({ message: 'Rating and comment are required.' });
+            return;
+        }
+
+        try {
+            const response = await axios.post(
+                `${server}/api/review/add`,
+                { productId, rating, reviewComment },
+                { withCredentials: true }
+            );
+
+            toast.success(response.data.message);
+            fetchReviews(); // Refresh reviews after submission
+
+            // Clear form fields
+            setRating(0);
+            setReviewComment('');
+        } catch (err) {
+            toast.error(err.response?.data?.message || 'Failed to submit review');
+        }
+    };
+
+    return (
+        <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+                <Label>Rating (1-5)</Label>
+                <div className="flex items-center">
+                    {/* Loop through 5 stars and display clickable ones */}
+                    {[...Array(5)].map((_, index) => (
+                        <span
+                            key={index}
+                            className={`cursor-pointer text-3xl ${rating > index ? 'text-yellow-500' : 'text-gray-300'}`} // Highlight stars based on the rating
+                            onClick={() => setRating(index + 1)} // Set rating on click
+                        >
+                            ★
+                        </span>
+                    ))}
+                </div>
+            </div>
+
+            <div>
+                <Label>Review Comment</Label>
+                <Input
+                    type="text"
+                    value={reviewComment}
+                    onChange={(e) => setReviewComment(e.target.value)}
+                />
+            </div>
+            <Button type="submit" className="w-full">
+                Submit Review
+            </Button>
+        </form>
+    );
+};
+
+// Product Reviews component
+const ProductReviews = ({ productId, user }) => {
+    const [reviews, setReviews] = useState([]);
+    const [editReviewId, setEditReviewId] = useState(null);
+    const [updatedRating, setUpdatedRating] = useState(0);
+    const [updatedComment, setUpdatedComment] = useState("");
+
+    const fetchReviews = async () => {
+        try {
+            const response = await axios.get(`${server}/api/review/${productId}`, { withCredentials: true });
+            setReviews(response.data.reviews);
+        } catch (err) {
+            toast.error('Failed to fetch reviews');
+        }
+    };
+
+    useEffect(() => {
+        fetchReviews();
+    }, [productId]);
+
+    const handleEdit = (reviewId, rating, comment) => {
+        
+        setEditReviewId(reviewId);
+        setUpdatedRating(rating);
+        setUpdatedComment(comment);
+    };
+
+    const handleEditSubmit = async (reviewId) => {
+      
+        try {
+            const response = await axios.put(
+                `${server}/api/review/${reviewId}`,
+                { rating: updatedRating, reviewComment: updatedComment },
+                { withCredentials: true }
+            );
+
+            toast.success(response.data.message);
+            setEditReviewId(null); // Close the edit form
+            fetchReviews(); // Refresh reviews
+        } catch (err) {
+            toast.error(err.response?.data?.message || "Failed to update review");
+        }
+    };
+
+    const handleDelete = async (reviewId) => {
+        // Check if the logged-in user is the owner of the review
+        if (user._id !== reviews.find(review => review._id === reviewId).userId.id) {
+            toast.error('Not authorized to delete this review');
+            return;
+        }
+
+        try {
+            await axios.delete(`${server}/api/review/${reviewId}`, { withCredentials: true });
+            toast.success('Review deleted successfully');
+            fetchReviews(); // Refresh reviews after deletion
+        } catch (err) {
+            toast.error(err.response?.data?.message || "Failed to delete review");
+        }
+    };
+
+    return (
+        <div className="mt-6">
+            <h2 className="text-lg font-bold">Reviews</h2>
+            {reviews.length === 0 ? (
+                <p>No reviews yet.</p>
+            ) : (
+                reviews.map((review) => (
+                    <div key={review._id} className="border p-4 rounded-md mt-4">
+                        <div className="flex justify-between items-center">
+                            <strong>{review.userId.username}</strong> {/* Username */}
+                            <div className="flex">
+                                {/* Display stars */}
+                                {[...Array(5)].map((_, index) => (
+                                    <span key={index} className={index < review.rating ? "text-yellow-500" : "text-gray-300"}>★</span>
+                                ))}
+                            </div>
+                        </div>
+                        <p>{review.reviewComment}</p>
+
+                        {/* Show delete/edit options only if the logged-in user is the one who wrote the review */}
+                        {user && review.userId.id === user._id && (
+                            <div className="mt-2">
+                                <button className="text-blue-600" onClick={() => handleEdit(review._id, review.rating, review.reviewComment)}><Edit3 className="w-4 h-4" /></button>
+                                <button className="text-red-600 ml-2" onClick={() => handleDelete(review._id)}><Trash className="w-4 h-4" /></button>
+                            </div>
+                        )}
+
+                        {/* Show edit form if this review is being edited */}
+                        {editReviewId === review._id && (
+                            <form onSubmit={() => handleEditSubmit(review._id)} className="mt-4 space-y-2">
+                                <div>
+                                    <label>Rating (1-5)</label>
+                                    <div className="flex items-center">
+                                        {/* Loop through 5 stars and display clickable ones */}
+                                        {[...Array(5)].map((_, index) => (
+                                            <span
+                                                key={index}
+                                                className={`cursor-pointer text-3xl ${updatedRating > index ? 'text-yellow-500' : 'text-gray-300'}`} // Highlight stars based on the rating
+                                                onClick={() => setUpdatedRating(index + 1)} // Set rating on click
+                                            >
+                                                ★
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label>Review Comment</label>
+                                    <input
+                                        type="text"
+                                        value={updatedComment}
+                                        onChange={(e) => setUpdatedComment(e.target.value)}
+                                        className="w-full p-2 border rounded-md"
+                                    />
+                                </div>
+
+                                <button type="submit" className="bg-blue-600 text-white p-2 rounded-md w-full">
+                                    Update Review
+                                </button>
+                            </form>
+                        )}
+                    </div>
+                ))
+            )}
+        </div>
+    );
+};
 
 const ProductPage = () => {
     const { fetchProduct, relatedProduct, product, loading } = ProductData();
@@ -232,10 +425,17 @@ const ProductPage = () => {
                                         Please login to add something to cart
                                     </a>
                                 ) : null}
-
                             </div>
                         </div>
                     )}
+
+                    {/* Add Review Form */}
+                    {isAuth && user?.role !== 'admin' && (
+                        <ReviewForm productId={id} fetchReviews={() => fetchProduct(id)} />
+                    )}
+
+                    {/* Display Reviews */}
+                    <ProductReviews productId={id} user={user} />
                 </div>
             )}
 
