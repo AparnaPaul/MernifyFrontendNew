@@ -13,6 +13,8 @@ import { Edit, Edit3, Loader, Trash, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+// import {axiosInstance} from '../../config.js'
+
 
 // Review Form component
 const ReviewForm = ({ productId, fetchReviews }) => {
@@ -267,13 +269,12 @@ const ProductPage = () => {
         try {
             const { data } = await axios.put(
                 `${server}/api/product/${id}`,
-                { title, description, price, stock, category },
-                { withCredentials: true }
+                { title, description, price, stock, category }, { withCredentials: true }
+
             );
 
             toast.success(data.message);
             fetchProduct(id);
-            setShow(false);
             setBtnLoading(false);
         } catch (error) {
             toast.error(error.response.data.message);

@@ -1,5 +1,10 @@
-import axios from "axios"
+import axios from "axios";
 
-const API=import.meta.env.client
+// Get the server URL from the environment variable
+const API = import.meta.env.VITE_SERVER_URL;
 
-export const axiosInstance = axios.create({ baseURL: API})
+// Create an Axios instance with baseURL and withCredentials set to true
+export const axiosInstance = axios.create({
+  baseURL: API,
+  withCredentials: true,  // Ensures credentials like cookies are sent with each request
+});

@@ -17,7 +17,7 @@ export const ProductProvider = ({ children }) => {
 
     async function fetchProducts() {
         try {
-            const { data } = await axios.get(`${server}/api/product/all?search=${search}&category=${category}&sortByPrice=${price}&page=${page}`);
+            const { data } = await axios.get(`${server}/api/product/all?search=${search}&category=${category}&sortByPrice=${price}&page=${page}`, {withCredentials:true});
             setProducts(data.products);
             setNewProd(data.newProduct);
             setCategories(data.categories)
@@ -34,7 +34,7 @@ export const ProductProvider = ({ children }) => {
     async function fetchProduct(id) {
         setLoading(true)
         try {
-            const { data } = await axios.get(`${server}/api/product/${id}`)
+            const { data } = await axios.get(`${server}/api/product/${id}`, {withCredentials:true})
 
             setProduct(data.product)
             setRelatedProduct(data.relatedProduct)
