@@ -91,7 +91,10 @@ const ProductReviews = ({ productId, user }) => {
             const response = await axios.get(`${server}/api/review/${productId}`, { withCredentials: true });
             setReviews(response.data.reviews);
         } catch (err) {
-            toast.error('Failed to fetch reviews');
+            // Only show error toasts for non-admin users
+            if (user?.role !== 'admin') {
+                toast.error('Failed to fetch reviews');
+            }
         }
     };
 
@@ -100,14 +103,12 @@ const ProductReviews = ({ productId, user }) => {
     }, [productId]);
 
     const handleEdit = (reviewId, rating, comment) => {
-        
         setEditReviewId(reviewId);
         setUpdatedRating(rating);
         setUpdatedComment(comment);
     };
 
     const handleEditSubmit = async (reviewId) => {
-      
         try {
             const response = await axios.put(
                 `${server}/api/review/${reviewId}`,
@@ -212,15 +213,35 @@ const ProductPage = () => {
     const { addToCart } = CartData();
     const { id } = useParams();
     const { isAuth, user } = useAuth();
+    const [averageRating, setAverageRating] = useState(null);
 
     useEffect(() => {
         fetchProduct(id);
     }, [id]);
 
+    // Fetch reviews and calculate average rating
+    const fetchReviewsAndCalculateRating = async () => {
+        try {
+            const response = await axios.get(`${server}/api/review/${id}`, { withCredentials: true });
+            const reviews = response.data.reviews;
+            if (reviews.length > 0) {
+                const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0);
+                setAverageRating(totalRating / reviews.length);  // Calculate the average rating
+            } else {
+                setAverageRating(null);  // No reviews, no rating
+            }
+        } catch (err) {
+            toast.error('Failed to fetch reviews');
+        }
+    };
+
+    useEffect(() => {
+        fetchReviewsAndCalculateRating();
+    }, [id]);
+
     const addToCartHandler = () => {
         addToCart(id);
     };
-
     const [show, setShow] = useState(false);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -289,6 +310,7 @@ const ProductPage = () => {
             setBtnLoading(false);
         }
     };
+
 
     return (
         <div>
@@ -414,6 +436,23 @@ const ProductPage = () => {
                                 <p className="text-lg">{product.description}</p>
                                 <p className="text-xl font-semibold">$ {product.price}</p>
 
+                                {/* Display average rating below the price */}
+                                {averageRating !== null && (
+                                    <div className="flex items-center">
+                                        <div className="flex">
+                                            {[...Array(5)].map((_, index) => (
+                                                <span
+                                                    key={index}
+                                                    className={`text-2xl ${index < averageRating ? 'text-yellow-500' : 'text-gray-300'}`}
+                                                >
+                                                    ★
+                                                </span>
+                                            ))}
+                                        </div>
+                                        <span className="ml-2 text-sm">({averageRating.toFixed(1)})</span>
+                                    </div>
+                                )}
+
                                 {isAuth && user?.role !== 'admin' ? (
                                     product.stock <= 0 ? (
                                         <p className="text-red-600 text-2xl">Out of Stock</p>
@@ -429,12 +468,11 @@ const ProductPage = () => {
                         </div>
                     )}
 
-                    {/* Add Review Form */}
+                    {/* Display Review Form and Reviews */}
                     {isAuth && user?.role !== 'admin' && (
-                        <ReviewForm productId={id} fetchReviews={() => fetchProduct(id)} />
+                        <ReviewForm productId={id} fetchReviews={() => fetchReviewsAndCalculateRating()} />
                     )}
 
-                    {/* Display Reviews */}
                     <ProductReviews productId={id} user={user} />
                 </div>
             )}
@@ -452,5 +490,6 @@ const ProductPage = () => {
         </div>
     );
 };
+
 
 export default ProductPage;

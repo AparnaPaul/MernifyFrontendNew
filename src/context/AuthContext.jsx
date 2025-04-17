@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { CartData } from "./CartContext";
 
 const AuthContext = createContext();
+// const {isAuth, user} = useAuth();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -18,7 +19,12 @@ export const AuthProvider = ({ children }) => {
     fetchUser();
   }, []);
 
-  
+  useEffect(() => {
+    if (isAuth && user?.role !== 'admin') {
+        // Only fetch the cart for non-admin users
+        fetchCart();
+    }
+}, [isAuth, user]);
   const login = async (name, token, role, email, mobile) => {
     setBtnLoading(true);
     try {
@@ -31,7 +37,7 @@ export const AuthProvider = ({ children }) => {
       setIsAuth(true);
       toast.success("Logged in successfully");
 
-      await fetchCart();
+      // await fetchCart();
 
       if (role === "admin") {
         navigate("/adminDashboard");
@@ -80,8 +86,8 @@ export const AuthProvider = ({ children }) => {
     setIsAuth(false);
 
     clearCart();
-    navigate("/login");
     toast.success("Logged out successfully");
+    navigate("/login");
   };
 
   return (

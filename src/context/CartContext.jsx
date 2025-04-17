@@ -69,6 +69,11 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  const clearCart = () => {
+    setCartItems([]); // Clears the cart
+};
+
+
   // Remove from Cart Function
   const removeFromCart = async (id) => {
     const token = Cookies.get("token");
@@ -100,6 +105,7 @@ export const CartProvider = ({ children }) => {
         addToCart,
         updateCart,    // Export updateCart function
         removeFromCart, // Export removeFromCart function
+        clearCart
       }}
     >
       {children}
