@@ -5,7 +5,6 @@ import Cookies from "js-cookie";
 import { CartData } from "./CartContext";
 
 const AuthContext = createContext();
-// const {isAuth, user} = useAuth();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -24,20 +23,22 @@ export const AuthProvider = ({ children }) => {
         // Only fetch the cart for non-admin users
         fetchCart();
     }
-}, [isAuth, user]);
+  }, [isAuth, user]);
+
+  // Login function
   const login = async (name, token, role, email, mobile) => {
     setBtnLoading(true);
+    console.log("TOKEM--", token)
     try {
       const userData = { username: name, role, email, mobile };
 
-      localStorage.setItem("loggedInUser", JSON.stringify({ user: userData }));
+      // Store user data and token in cookies
+      Cookies.set("loggedInUser", JSON.stringify(userData), { expires: 1 });
       Cookies.set("token", token, { expires: 1 });
 
       setUser(userData);
       setIsAuth(true);
       toast.success("Logged in successfully");
-
-      // await fetchCart();
 
       if (role === "admin") {
         navigate("/adminDashboard");
@@ -52,13 +53,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Fetch user function to load user data from cookies
   const fetchUser = () => {
-    const storedUser = localStorage.getItem("loggedInUser");
+    const storedUser = Cookies.get("loggedInUser");
     const token = Cookies.get("token");
 
     try {
       if (storedUser && token) {
-        const parsedUser = JSON.parse(storedUser)?.user;
+        const parsedUser = JSON.parse(storedUser);
         if (parsedUser && parsedUser.username) {
           setUser(parsedUser);
           setIsAuth(true);
@@ -69,19 +71,21 @@ export const AuthProvider = ({ children }) => {
         throw new Error("No valid user found");
       }
     } catch (error) {
-      console.error("Error fetching user from localStorage:", error);
+      console.error("Error fetching user from cookies:", error);
       setUser(null);
       setIsAuth(false);
-      localStorage.removeItem("loggedInUser");
+      Cookies.remove("loggedInUser");
+      Cookies.remove("token");
     }
 
     setLoading(false);
   };
 
+  // Logout function
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("loggedInUser");
+    Cookies.remove("loggedInUser");
     Cookies.remove("token");
+
     setUser(null);
     setIsAuth(false);
 

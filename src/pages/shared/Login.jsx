@@ -26,11 +26,14 @@ const Login = () => {
       : `${server}/api/user/login`;
 
     try {
+      // Send login request
       const response = await fetch(apiUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(data),
-        credentials: "include"
+        credentials: "include", // Make sure cookies are included if needed
       });
 
       const result = await response.json();
@@ -40,17 +43,18 @@ const Login = () => {
       }
 
       const userData = result.user || result.admin;
-      const token = document.cookie
-        .split(";")
-        .find((row) => row.trim().startsWith("token="))
-        ?.split("=")[1];
+      const token = result.token;  // Get the token directly from the response
 
-      console.log("Debugging--")
-      console.log(userData.username, token, userData.role, userData.email)
+      console.log("Debugging--");
+      console.log(userData?.username, token, userData?.role, userData?.email);
 
       if (userData && token) {
+        // Call login function from AuthContext to store the user data and token in the context
         login(userData.username, token, userData.role, userData.email);
         // toast.success("Login successful");
+
+        // Optionally, redirect the user to another page (e.g., dashboard)
+        // You can use `useNavigate()` from `react-router-dom` for this.
       } else {
         toast.error("Missing user data or token");
         console.warn("Login response missing user/token:", { userData, token });

@@ -6,7 +6,7 @@ import { ThemeProvider } from './components/theme-provider'
 import { ProductProvider } from './context/ProductContext'
 import {axiosInstance}  from './config.js'
 
-export const server = "https://mernifyservernew.onrender.com"
+export const server =  "https://mernifyservernew.onrender.com"
 console.log("DEBUG",axiosInstance)
 export const categories = [
   "smartphone", "shoes", "Home Appliances", "Smart Watch", "earbuds", "laptop", "tablet", "tshirt", "camera", "television", "refrigerator"]
