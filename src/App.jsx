@@ -61,7 +61,8 @@ const AppRoutes = () => {
 
         {/* Authentication Routes */}
         <Route path="/login" element={isAuth && user?.role === "user" ? <Home /> : <Login />} />
-        <Route path="/signup" element={isAuth ? <Home /> : <Signup />} />
+        <Route path="/signup" element={<Signup />} />
+
 
         {/* Catch-All Route */}
         <Route path="*" element={<NotFound />} />
