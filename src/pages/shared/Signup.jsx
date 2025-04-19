@@ -56,7 +56,9 @@ const Signup = () => {
   
   
     try {
-      const response = await axios.post(`${server}/api/user/signup`, signupInfo);
+      const response = await axios.post(`${server}/api/user/signup`, signupInfo, {
+        withCredentials:true
+      });
   
       const result = response.data;
       if (result.success) {
