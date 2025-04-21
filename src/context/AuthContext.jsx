@@ -89,8 +89,8 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setIsAuth(false);
 
-    clearCart();
     toast.success("Logged out successfully");
+    clearCart();
     navigate("/login");
   };
 
