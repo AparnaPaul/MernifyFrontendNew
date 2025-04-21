@@ -125,7 +125,7 @@ const EditProfile = () => {
                         <div>
                             <strong>Email: </strong> {userDetails.email}
                         </div>
-                       
+
                     </CardContent>
                 </Card>
             )}
@@ -150,9 +150,9 @@ const EditProfile = () => {
                             <Label>Mobile</Label>
                             <Input
                                 type="text"
-                                value={mobile}  // Bind value to state
+                                value={mobile}
                                 onChange={(e) => setMobile(e.target.value)}
-                                placeholder={user.mobile || ""}  // Ensure mobile shows as placeholder immediately
+                                placeholder={user.mobile || ""}
                             />
                         </div>
 
@@ -162,7 +162,7 @@ const EditProfile = () => {
                                 type="password"
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
-                                placeholder="Enter new password" // Inform the user to leave empty if not updating
+                                placeholder="Enter new password"
                                 disabled={!isOldPasswordValid}  // Disable new password field if old password is invalid
                             />
                         </div>
@@ -172,7 +172,7 @@ const EditProfile = () => {
                             <Input
                                 type="password"
                                 value={currentPassword}
-                                onChange={handleCurrentPasswordChange}  // Use separate function to handle changes
+                                onChange={handleCurrentPasswordChange}
                                 placeholder="Enter your current password"
                             />
                         </div>

@@ -23,7 +23,6 @@ const AddNewAdmin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    console.log("Submitting form with data:", formData); // Debugging log
 
     // Check if the token exists in cookies
     const token = Cookies.get('token');
@@ -37,14 +36,13 @@ const AddNewAdmin = () => {
         `${server}/api/admin/addAdmin`,
         formData,
         {
-          withCredentials: true, // Automatically send cookies with the request
+          withCredentials: true,
         }
       );
-      console.log("Admin created successfully:", data); // Debugging log
+
       toast.success(data.message || 'New admin added');
       setFormData({ username: '', email: '', password: '', mobile: '' });
     } catch (err) {
-      console.error("Error while creating admin:", err); // Debugging log
       toast.error(err.response?.data?.message || err.message);
     } finally {
       setLoading(false);

@@ -60,7 +60,6 @@ const Checkout = () => {
     }, [])
 
     const deleteHandler = async (id) => {
-        console.log("Deleting address with ID:", id); // Add this log
         if (confirm("Are you sure you want to delete this address?")) {
             try {
                 const { data } = await axios.delete(`${server}/api/address/${id}`, {

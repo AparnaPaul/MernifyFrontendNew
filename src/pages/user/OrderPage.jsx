@@ -5,24 +5,24 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Loading from "@/components/Loading";
 import { server } from "@/main";
-import { useAuth } from "@/context/AuthContext"; // To get the user context
+import { useAuth } from "@/context/AuthContext"; 
 
 const OrderPage = () => {
-  const { id } = useParams(); // Fetch the order ID from the URL
+  const { id } = useParams(); 
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth(); // Get the logged-in user from context
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        // Make API call to fetch the order details
+     
         const response = await axios.get(`${server}/api/order/${id}`, {
-          withCredentials: true, // Ensure cookies are sent with the request
+          withCredentials: true, 
         });
 
-        // Successfully fetched order
+       
         console.log("Order fetched successfully:", response.data);
         setOrder(response.data); // Set the order data into state
       } catch (error) {

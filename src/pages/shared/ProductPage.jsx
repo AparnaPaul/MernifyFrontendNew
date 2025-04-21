@@ -13,7 +13,7 @@ import { Edit, Edit3, Loader, Trash, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-// import {axiosInstance} from '../../config.js'
+
 
 
 // Review Form component
@@ -40,7 +40,6 @@ const ReviewForm = ({ productId, fetchReviews }) => {
             toast.success(response.data.message);
             fetchReviews(); // Refresh reviews after submission
 
-            // Clear form fields
             setRating(0);
             setReviewComment('');
         } catch (err) {
@@ -119,8 +118,8 @@ const ProductReviews = ({ productId, user }) => {
             );
 
             toast.success(response.data.message);
-            setEditReviewId(null); // Close the edit form
-            fetchReviews(); // Refresh reviews
+            setEditReviewId(null);
+            fetchReviews(); 
         } catch (err) {
             toast.error(err.response?.data?.message || "Failed to update review");
         }
@@ -136,7 +135,7 @@ const ProductReviews = ({ productId, user }) => {
         try {
             await axios.delete(`${server}/api/review/${reviewId}`, { withCredentials: true });
             toast.success('Review deleted successfully');
-            fetchReviews(); // Refresh reviews after deletion
+            fetchReviews();  
         } catch (err) {
             toast.error(err.response?.data?.message || "Failed to delete review");
         }

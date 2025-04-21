@@ -103,8 +103,8 @@ export const CartProvider = ({ children }) => {
         subTotal,
         fetchCart,
         addToCart,
-        updateCart,    // Export updateCart function
-        removeFromCart, // Export removeFromCart function
+        updateCart,    
+        removeFromCart, 
         clearCart
       }}
     >

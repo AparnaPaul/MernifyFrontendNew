@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import axios from "axios"; // Using axios for API requests
-import { server } from "@/main"; // Adjust based on your server's URL
+import axios from "axios"; 
+import { server } from "@/main"; 
 
 const Signup = () => {
   const [signupInfo, setSignupInfo] = useState({ username: "", email: "", password: "", mobile: "" });
@@ -43,10 +43,9 @@ const Signup = () => {
     }
 
     setErrors(formErrors);
-    return Object.keys(formErrors).length === 0; // If no errors, return true
+    return Object.keys(formErrors).length === 0; 
   };
 
-  // Handle the signup form submission
   const handleSignup = async (e) => {
     e.preventDefault();
   
@@ -62,8 +61,8 @@ const Signup = () => {
   
       const result = response.data;
       if (result.success) {
-        toast.success(result.message); // Show success message
-        setTimeout(() => navigate("/login"), 1000); // Redirect after success
+        toast.success(result.message);
+        setTimeout(() => navigate("/login"), 1000); 
       } else if (result.message === "User already exists, you can login") {
         toast.info("You are already registered. Please login instead.");
       } else {
@@ -72,7 +71,6 @@ const Signup = () => {
     } catch (err) {
       console.error("Signup error:", err);
   
-      // Check if the error is a 400 or 409
       if (err.response) {
         if (err.response.status === 409) {
           toast.info("User already exists, please login.");

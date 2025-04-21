@@ -12,7 +12,7 @@ import { server } from "@/main";
 const Login = () => {
   const { register, handleSubmit } = useForm();
   const [role, setRole] = React.useState("user");
-  const { login } = useAuth(); // Get login function from context
+  const { login } = useAuth();
 
   const handleRoleChange = (value) => {
     setRole(value);
@@ -33,7 +33,7 @@ const Login = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-        credentials: "include", // Make sure cookies are included if needed
+        credentials: "include",
       });
 
       const result = await response.json();
@@ -43,7 +43,7 @@ const Login = () => {
       }
 
       const userData = result.user || result.admin;
-      const token = result.token;  // Get the token directly from the response
+      const token = result.token;
 
       console.log("Debugging--");
       console.log(userData?.username, token, userData?.role, userData?.email);
@@ -51,10 +51,7 @@ const Login = () => {
       if (userData && token) {
         // Call login function from AuthContext to store the user data and token in the context
         login(userData.username, token, userData.role, userData.email);
-        // toast.success("Login successful");
 
-        // Optionally, redirect the user to another page (e.g., dashboard)
-        // You can use `useNavigate()` from `react-router-dom` for this.
       } else {
         toast.error("Missing user data or token");
         console.warn("Login response missing user/token:", { userData, token });

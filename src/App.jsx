@@ -75,8 +75,8 @@ const AppRoutes = () => {
 const App = () => {
   return (
     <BrowserRouter>
-      <CartProvider> {/* ✅ CartProvider must be inside AuthProvider */}
-        <AuthProvider> {/* ✅ AuthProvider must be inside BrowserRouter */}
+      <CartProvider> 
+        <AuthProvider>
           <AppRoutes />
         </AuthProvider>
       </CartProvider>
