@@ -71,7 +71,7 @@ const Orders = () => {
                                    {new Date(order.createdAt).toLocaleDateString('en-GB')}
                                 </p>
 
-                                <Button className="mt-4" onClick={()=> navigate(`/order/${order.id}`)}>View Details</Button>
+                                <Button className="mt-4" onClick={()=> navigate(`/order/${order._id}`)}>View Details</Button>
                             </CardContent>
                         </Card>
                     })

@@ -73,7 +73,7 @@ const Payment = () => {
                 if (data.url) {
                     window.location.href = data.url
                     setLoading(false)
-                } else P
+                } else 
                 toast.error("Failed to create Payment session")
                 setLoading(false)
 
